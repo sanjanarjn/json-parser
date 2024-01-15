@@ -7,14 +7,10 @@ import fyi.codingchallenges.jsonparser.models.*;
 
 public class JsonParser {
 
-    private ParseState parseState;
-
-    public JsonParser() {
-        parseState = new ParseState();
-    }
-
+    // {"key" : {"k1": "v1"}}
     public JsonNode parse(String s) throws JsonParseException {
 
+        ParseState parseState = new ParseState();
         int size = s.length();
         for(int i = 0; i < size; i++) {
             char c = s.charAt(i);
@@ -23,6 +19,9 @@ public class JsonParser {
             parseState.setCurrentIndex(i);
             handler.handleJsonSymbol(parseState, String.valueOf(c));
         }
+        if(parseState.getNodeStack().size() != 1)
+            throw new JsonParseException("Invalid Json");
+
         return parseState.getNodeStack().peek();
     }
 }

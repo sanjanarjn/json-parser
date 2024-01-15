@@ -14,6 +14,7 @@ public class JsonSymbolHandlerFactory {
            case COLON -> new ColonSymbolHandler();
            case COMMA -> new CommaSymbolHandler();
            case ESCAPE -> new EscapeSymbolHandler();
+           case WHITE_SPACE -> new WhiteSpaceSymbolHandler();
            case ANY ->  new AnySymbolHandler();
        };
     }

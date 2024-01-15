@@ -10,7 +10,10 @@ public class AnySymbolHandler implements JsonSymbolHandler {
 
     @Override
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {
-        if (!parseState.emptyParseState()) {
+        if(parseState.emptyParseState()) {
+            throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
+        }
+        else {
             boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.COMMA) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.COLON) ||
                     parseState.isPreviousNodeJsonSymbol(JsonSymbol.JSON_ARRAY_START) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.QUOTE);
             if (!isValidSymbol)

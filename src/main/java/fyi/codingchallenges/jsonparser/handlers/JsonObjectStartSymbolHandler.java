@@ -9,21 +9,15 @@ import fyi.codingchallenges.jsonparser.models.ParseState;
 import java.text.MessageFormat;
 import java.util.Stack;
 
-public class JsonObjectStartSymbolHandler implements JsonSymbolHandler {
+public class JsonObjectStartSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {
         Stack<JsonNode> nodeStack = parseState.getNodeStack();
         if(!nodeStack.isEmpty()) {
-           JsonNode prevNode = nodeStack.peek();
-           boolean prevNodeHasToBeElement = prevNode instanceof JsonElement;
-
-           if(!prevNodeHasToBeElement)
-               throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
-
-           JsonElement element = (JsonElement) prevNode;
-           JsonSymbol prevSymbol = element.getSymbol();
-           boolean isValidSymbol = JsonSymbol.COMMA.equals(prevSymbol) || JsonSymbol.COLON.equals(prevSymbol) || JsonSymbol.JSON_ARRAY_START.equals(prevSymbol);
+           boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.COMMA) ||
+                   parseState.isPreviousNodeJsonSymbol(JsonSymbol.COLON) ||
+                   parseState.isPreviousNodeJsonSymbol(JsonSymbol.JSON_ARRAY_START);
            if(!isValidSymbol)
                throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
         }
@@ -31,11 +25,7 @@ public class JsonObjectStartSymbolHandler implements JsonSymbolHandler {
 
     @Override
     public void updateParseState(ParseState parseState, String token) {
-        JsonElement element = new JsonElement();
-        element.setSymbol(JsonSymbol.JSON_OBJECT_START);
-        element.setData(JsonSymbol.JSON_OBJECT_START.getSymbol());
-
         Stack<JsonNode> nodeStack = parseState.getNodeStack();
-        nodeStack.push(element);
+        nodeStack.push(new JsonElement(JsonSymbol.JSON_OBJECT_START.getSymbol(), JsonSymbol.JSON_OBJECT_START));
     }
 }

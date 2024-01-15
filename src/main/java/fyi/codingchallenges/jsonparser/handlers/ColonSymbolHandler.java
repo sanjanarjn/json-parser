@@ -9,7 +9,7 @@ import fyi.codingchallenges.jsonparser.models.ParseState;
 import java.text.MessageFormat;
 import java.util.Stack;
 
-public class ColonSymbolHandler implements JsonSymbolHandler {
+public class ColonSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {

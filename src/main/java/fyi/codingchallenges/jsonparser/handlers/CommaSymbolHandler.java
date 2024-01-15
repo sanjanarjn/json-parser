@@ -6,23 +6,34 @@ import fyi.codingchallenges.jsonparser.models.JsonNode;
 import fyi.codingchallenges.jsonparser.models.JsonSymbol;
 import fyi.codingchallenges.jsonparser.models.ParseState;
 
-import java.text.MessageFormat;
 import java.util.Stack;
 
-public class CommaSymbolHandler implements JsonSymbolHandler {
+public class CommaSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {
-        if (!parseState.emptyParseState()) {
-            boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.ANY);
-            if (!isValidSymbol)
-                throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
+
+        validate(parseState, token, !parseState.emptyParseState());
+
+        if (!parseState.getCurrentToken().isEmpty()) {
+            boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.JSON_ARRAY_START) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.COMMA) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.COLON);
+            validate(parseState, token, isValidSymbol);
+        } else {
+            boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.ANY) || parseState.isPreviousNodeJsonObject() || parseState.isPreviousNodeJsonArray();
+            validate(parseState, token, isValidSymbol);
         }
     }
 
     @Override
-    public void updateParseState(ParseState parseState, String token) {
-       Stack<JsonNode> nodeStack = parseState.getNodeStack();
-       nodeStack.push(new JsonElement(token, JsonSymbol.COLON));
+    public void updateParseState(ParseState parseState, String token) throws JsonParseException {
+        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+
+        String currentToken = parseState.getCurrentToken().trim();
+        if (!currentToken.isEmpty()) {
+            validate(parseState, currentToken, isValidLiteral(currentToken, LiteralType.UNQUOTED));
+            parseState.pushCurrentTokenToNodeStack();
+        }
+
+        nodeStack.push(new JsonElement(token, JsonSymbol.COMMA));
     }
 }

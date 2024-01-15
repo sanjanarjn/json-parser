@@ -17,13 +17,8 @@ public class QuoteSymbolHandler implements JsonSymbolHandler {
         if (parseState.emptyParseState())
             throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
 
-        boolean isClosingQuote = !parseState.getCurrentToken().isEmpty();
-        if (isClosingQuote) {
-            boolean isOpeningQuotePresent = parseState.isPreviousNodeJsonSymbol(JsonSymbol.QUOTE);
-            if (!isOpeningQuotePresent)
-                throw new JsonParseException(MessageFormat.format("Unexpected character {0} at index {1}", token, parseState.getCurrentIndex()));
-        }
-        else {
+        boolean isClosingQuote = parseState.isPreviousNodeJsonSymbol(JsonSymbol.QUOTE);
+        if (!isClosingQuote) {
             boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.COMMA) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.COLON) ||
                     parseState.isPreviousNodeJsonSymbol(JsonSymbol.JSON_ARRAY_START) || parseState.isPreviousNodeJsonSymbol(JsonSymbol.JSON_OBJECT_START);
             if (!isValidSymbol)
@@ -35,21 +30,17 @@ public class QuoteSymbolHandler implements JsonSymbolHandler {
     public void updateParseState(ParseState parseState, String token) throws JsonParseException {
 
         Stack<JsonNode> nodeStack = parseState.getNodeStack();
-        JsonElement element = new JsonElement();
-        element.setSymbol(JsonSymbol.QUOTE);
-        element.setData(JsonSymbol.QUOTE.getSymbol());
-
-        String currentToken = parseState.getCurrentToken();
-        boolean isClosingQuote = !currentToken.isEmpty();
+        boolean isClosingQuote = parseState.isPreviousNodeJsonSymbol(JsonSymbol.QUOTE);
 
         if (isClosingQuote) {
             // Pop the opening quote
             nodeStack.pop();
 
+            String currentToken = parseState.getCurrentToken();
+            validate(parseState, currentToken, isValidLiteral(currentToken, LiteralType.QUOTED));
+
             //Push the value within quotes
-            JsonElement node = new JsonElement(currentToken, JsonSymbol.ANY);
-            nodeStack.push(node);
-            parseState.resetCurrentToken();
+            parseState.pushCurrentTokenToNodeStack();
         } else {
             JsonElement node = new JsonElement(token, JsonSymbol.QUOTE);
             nodeStack.push(node);

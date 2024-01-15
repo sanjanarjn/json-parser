@@ -9,8 +9,9 @@ public class JsonInterpreter {
     }
 
     private static JsonSymbol getJsonSymbol(String s) {
+
         for(JsonSymbol jsonSymbol: JsonSymbol.values()) {
-            if(jsonSymbol.getSymbol().equalsIgnoreCase(s))
+            if(jsonSymbol.getSymbol().equalsIgnoreCase(s.trim()))
                 return jsonSymbol;
         }
         return JsonSymbol.ANY;

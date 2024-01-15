@@ -7,6 +7,7 @@ import fyi.codingchallenges.jsonparser.models.JsonSymbol;
 import fyi.codingchallenges.jsonparser.models.ParseState;
 
 import java.text.MessageFormat;
+import java.util.Deque;
 import java.util.Stack;
 
 public class ColonSymbolHandler extends SimpleStringSymbolHandler {
@@ -22,7 +23,7 @@ public class ColonSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void updateParseState(ParseState parseState, String token) {
-       Stack<JsonNode> nodeStack = parseState.getNodeStack();
+       Deque<JsonNode> nodeStack = parseState.getNodeStack();
        nodeStack.push(new JsonElement(token, JsonSymbol.COLON));
     }
 }

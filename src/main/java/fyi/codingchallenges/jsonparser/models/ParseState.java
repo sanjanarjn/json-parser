@@ -2,6 +2,8 @@ package fyi.codingchallenges.jsonparser.models;
 
 import lombok.Data;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Stack;
 
 @Data
@@ -11,10 +13,10 @@ public class ParseState {
     private int currentIndex;
     private boolean escapeNextCharacter;
 
-    private Stack<JsonNode> nodeStack;
+    private Deque<JsonNode> nodeStack;
 
     public ParseState() {
-        this.nodeStack = new Stack<>();
+        this.nodeStack = new ArrayDeque<>();
         this.currentToken = new StringBuilder();
     }
 

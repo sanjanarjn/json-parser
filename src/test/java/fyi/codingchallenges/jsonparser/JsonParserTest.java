@@ -30,9 +30,8 @@ public class JsonParserTest {
                 parser.parse(testJsons.get(fileName));
                 result.put(fileName, "passed");
             } catch (Exception e) {
-                //e.printStackTrace();
+                e.printStackTrace();
                 result.put(fileName, "failed");
-
             }
         }
 

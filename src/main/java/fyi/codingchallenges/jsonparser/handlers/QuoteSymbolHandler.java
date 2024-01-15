@@ -7,6 +7,7 @@ import fyi.codingchallenges.jsonparser.models.JsonSymbol;
 import fyi.codingchallenges.jsonparser.models.ParseState;
 
 import java.text.MessageFormat;
+import java.util.Deque;
 import java.util.Stack;
 
 public class QuoteSymbolHandler implements JsonSymbolHandler {
@@ -29,7 +30,7 @@ public class QuoteSymbolHandler implements JsonSymbolHandler {
     @Override
     public void updateParseState(ParseState parseState, String token) throws JsonParseException {
 
-        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+        Deque<JsonNode> nodeStack = parseState.getNodeStack();
         boolean isClosingQuote = parseState.isPreviousNodeJsonSymbol(JsonSymbol.QUOTE);
 
         if (isClosingQuote) {

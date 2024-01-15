@@ -4,6 +4,7 @@ import fyi.codingchallenges.jsonparser.exceptions.JsonParseException;
 import fyi.codingchallenges.jsonparser.models.*;
 
 import java.text.MessageFormat;
+import java.util.Deque;
 import java.util.Stack;
 
 public class JsonArrayEndSymbolHandler extends SimpleStringSymbolHandler {
@@ -25,7 +26,7 @@ public class JsonArrayEndSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void updateParseState(ParseState parseState, String token) throws JsonParseException {
-        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+        Deque<JsonNode> nodeStack = parseState.getNodeStack();
 
         String currentToken = parseState.getCurrentToken().trim();
         if (!currentToken.isEmpty()) {

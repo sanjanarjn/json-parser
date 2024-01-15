@@ -7,12 +7,13 @@ import fyi.codingchallenges.jsonparser.models.JsonSymbol;
 import fyi.codingchallenges.jsonparser.models.ParseState;
 
 import java.text.MessageFormat;
+import java.util.Deque;
 import java.util.Stack;
 
 public class JsonArrayStartSymbolHandler extends SimpleStringSymbolHandler {
     @Override
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {
-        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+        Deque<JsonNode> nodeStack = parseState.getNodeStack();
         if(!nodeStack.isEmpty()) {
             JsonNode prevNode = nodeStack.peek();
             boolean prevNodeHasToBeElement = prevNode instanceof JsonElement;
@@ -32,7 +33,7 @@ public class JsonArrayStartSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void updateParseState(ParseState parseState, String token) {
-        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+        Deque<JsonNode> nodeStack = parseState.getNodeStack();
         nodeStack.push(new JsonElement(token, JsonSymbol.JSON_ARRAY_START));
     }
 }

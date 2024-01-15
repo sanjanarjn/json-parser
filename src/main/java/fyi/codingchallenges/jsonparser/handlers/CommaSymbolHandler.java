@@ -6,6 +6,7 @@ import fyi.codingchallenges.jsonparser.models.JsonNode;
 import fyi.codingchallenges.jsonparser.models.JsonSymbol;
 import fyi.codingchallenges.jsonparser.models.ParseState;
 
+import java.util.Deque;
 import java.util.Stack;
 
 public class CommaSymbolHandler extends SimpleStringSymbolHandler {
@@ -26,7 +27,7 @@ public class CommaSymbolHandler extends SimpleStringSymbolHandler {
 
     @Override
     public void updateParseState(ParseState parseState, String token) throws JsonParseException {
-        Stack<JsonNode> nodeStack = parseState.getNodeStack();
+        Deque<JsonNode> nodeStack = parseState.getNodeStack();
 
         String currentToken = parseState.getCurrentToken().trim();
         if (!currentToken.isEmpty()) {

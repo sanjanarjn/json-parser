@@ -47,6 +47,6 @@ public class JsonArray extends ArrayList<JsonNode> implements JsonNode {
 ```
 
 The following image represents how the parsing is achieved for a simple json ```{"key":"value"}```
-![Example Image](/images/example.png)
+![](/images/dryrun.png)
 
 

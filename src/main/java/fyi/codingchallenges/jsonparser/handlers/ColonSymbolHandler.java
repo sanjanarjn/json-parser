@@ -16,7 +16,7 @@ public class ColonSymbolHandler extends SimpleStringSymbolHandler {
     public void validateParseState(ParseState parseState, String token) throws JsonParseException {
 
         // Validating that colon cannot be the first token.
-        validate(parseState, token, parseState.emptyParseState());
+        validate(parseState, token, !parseState.emptyParseState());
 
         // Validating that symbol before is always a key which is of any type
         boolean isValidSymbol = parseState.isPreviousNodeJsonSymbol(JsonSymbol.ANY);
